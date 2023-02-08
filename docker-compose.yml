@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  stage:
+    image: ubuntu-stage-server:1.0.0
+    platform: linux/amd64
+    command: "sh ./cli/run.sh"
+
+  prod:
+    image: ubuntu-prod-server:1.0.0
+    platform: linux/amd64
+    command: "sh ./cli/run.sh"

@@ -1,0 +1,44 @@
+name: main
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+
+  build:
+    runs-on: [self-hosted, stage]
+    environment: stage
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker login
+        run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
+      - name: Build container
+        run: echo "docker build -t ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }} ."
+      - name: Push to Hub
+        run: echo "docker push ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
+
+  stage:
+    runs-on: [self-hosted, stage]
+    environment: stage
+    if: github.event.ref == 'refs/heads/master'
+    needs: [build]
+    steps:
+      - uses: .github/workflows/deploy.yml
+
+  test:
+    runs-on: [self-hosted, stage]
+    environment: stage
+    needs: [stage]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: echo "npm run e2e"
+
+  prod:
+    runs-on: [self-hosted, prod]
+    environment: prod
+    needs: [test]
+    steps:
+      - uses: .github/workflows/deploy.yml
