@@ -2,6 +2,7 @@ name: main
 
 on:
   pull_request:
+    types: [opened, closed]
     branches:
       - master
       - alpha
@@ -45,7 +46,7 @@ jobs:
   alpha:
     runs-on: [self-hosted, alpha]
     environment: alpha
-    if: github.event.pull_request.base.ref == 'alpha' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'alpha'
     steps:
       - uses: actions/checkout@v3
       - name: Docker login
@@ -58,7 +59,7 @@ jobs:
   prod:
     runs-on: [self-hosted, prod]
     environment: prod
-    if: github.event.pull_request.base.ref == 'master' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     steps:
       - uses: actions/checkout@v3
       - name: Docker login
