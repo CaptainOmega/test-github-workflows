@@ -67,3 +67,5 @@ jobs:
         run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
       - name: Run app container
         run: echo "docker-compose up"
+
+        
