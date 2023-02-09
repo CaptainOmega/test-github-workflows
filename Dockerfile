@@ -23,4 +23,4 @@ RUN tar xzf ./actions-runner-linux-x64-2.301.1.tar.gz .
 # Install dependencies
 RUN ./bin/installdependencies.sh
 # Create the runner and start the configuration experience
-RUN ./config.sh --replace --url https://github.com/CaptainOmega/test-github-workflows --token ${runner_token} --name ${runner_name}
+RUN ./config.sh --replace --url https://github.com/CaptainOmega/test-github-workflows --token ${runner_token} --name ${runner_name} --labels ${runner_name}
