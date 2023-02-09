@@ -6,6 +6,11 @@ services:
     platform: linux/amd64
     command: "sh ./cli/run.sh"
 
+  alpha:
+    image: ubuntu-alpha-server:1.0.0
+    platform: linux/amd64
+    command: "sh ./cli/run.sh"
+
   prod:
     image: ubuntu-prod-server:1.0.0
     platform: linux/amd64
