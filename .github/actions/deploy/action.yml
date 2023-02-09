@@ -3,9 +3,13 @@ name: deploy
 runs:
   using: "composite"
   steps:
-    - name: Docker login
-      run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
-    - name: Pull from Hub
-      run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
-    - name: Run app container
-      run: echo "docker-compose up"
+    - name: Docker pull image
+      run: |
+        echo "docker login --username ${CI_REGISTRY_USER} --password ${CI_REGISTRY_PASSWORD}"
+        echo "docker pull ${CI_REGISTRY_IMAGE}:${PULL_REQUEST_SHA}"
+        echo "docker-compose up"
+      env:
+        PULL_REQUEST_SHA: ${{ github.event.pull_request.head.sha }}
+        CI_REGISTRY_IMAGE: ${{ env.CI_REGISTRY_IMAGE }}
+        CI_REGISTRY_USER: ${{ env.CI_REGISTRY_USER }}
+        CI_REGISTRY_PASSWORD: ${{ env.CI_REGISTRY_PASSWORD }}
