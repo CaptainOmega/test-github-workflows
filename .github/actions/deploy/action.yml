@@ -3,7 +3,6 @@ name: deploy
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
     - name: Docker login
       run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
     - name: Pull from Hub

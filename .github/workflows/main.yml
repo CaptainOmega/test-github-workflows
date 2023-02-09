@@ -26,6 +26,7 @@ jobs:
     environment: stage
     needs: [build]
     steps:
+      - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
 
   test:
@@ -42,6 +43,7 @@ jobs:
     environment: alpha
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'alpha'
     steps:
+      - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
 
   prod:
@@ -49,4 +51,5 @@ jobs:
     environment: prod
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     steps:
+      - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
