@@ -22,7 +22,7 @@ jobs:
   stage:
     runs-on: [self-hosted, stage]
     environment: stage
-    if: github.event.pull_request.base.ref == 'refs/heads/master'
+    if: github.event.pull_request.base.ref == 'master'
     needs: [build]
     steps:
       - uses: actions/checkout@v3
