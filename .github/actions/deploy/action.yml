@@ -4,6 +4,7 @@ runs:
   using: "composite"
   steps:
     - name: Docker pull image
+      shell: bash
       run: |
         echo "docker login --username ${CI_REGISTRY_USER} --password ${CI_REGISTRY_PASSWORD}"
         echo "docker pull ${CI_REGISTRY_IMAGE}:${PULL_REQUEST_SHA}"
