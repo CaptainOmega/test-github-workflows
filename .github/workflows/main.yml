@@ -27,12 +27,7 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      - name: Docker login
-        run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
-      - name: Pull from Hub
-        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
-      - name: Run app container
-        run: echo "docker-compose up"
+      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
 
   test:
     runs-on: [self-hosted, stage]
@@ -49,12 +44,7 @@ jobs:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'alpha'
     steps:
       - uses: actions/checkout@v3
-      - name: Docker login
-        run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
-      - name: Pull from Hub
-        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
-      - name: Run app container
-        run: echo "docker-compose up"
+      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
 
   prod:
     runs-on: [self-hosted, prod]
@@ -62,9 +52,4 @@ jobs:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     steps:
       - uses: actions/checkout@v3
-      - name: Docker login
-        run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
-      - name: Pull from Hub
-        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
-      - name: Run app container
-        run: echo "docker-compose up"
+      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
