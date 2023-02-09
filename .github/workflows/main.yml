@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: [self-hosted, stage]
-    if: github.event.pull_request.merged == false
+    if: github.event.pull_request.merged == false && github.event.action != 'closed'
     environment: stage
     steps:
       - uses: actions/checkout@v3
@@ -28,6 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+        env:
+          CI_REGISTRY_IMAGE: ${{ secrets.CI_REGISTRY_IMAGE }}
+          CI_REGISTRY_USER: ${{ secrets.CI_REGISTRY_USER }}
+          CI_REGISTRY_PASSWORD: ${{ secrets.CI_REGISTRY_PASSWORD }}
 
   test:
     runs-on: [self-hosted, stage]
@@ -45,6 +49,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+        env:
+          CI_REGISTRY_IMAGE: ${{ secrets.CI_REGISTRY_IMAGE }}
+          CI_REGISTRY_USER: ${{ secrets.CI_REGISTRY_USER }}
+          CI_REGISTRY_PASSWORD: ${{ secrets.CI_REGISTRY_PASSWORD }}
 
   prod:
     runs-on: [self-hosted, prod]
@@ -53,3 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+        env:
+          CI_REGISTRY_IMAGE: ${{ secrets.CI_REGISTRY_IMAGE }}
+          CI_REGISTRY_USER: ${{ secrets.CI_REGISTRY_USER }}
+          CI_REGISTRY_PASSWORD: ${{ secrets.CI_REGISTRY_PASSWORD }}
