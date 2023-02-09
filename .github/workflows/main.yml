@@ -1,38 +1,37 @@
 name: main
 
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
 
 jobs:
-
   build:
     runs-on: [self-hosted, stage]
+    if: github.event.pull_request.merged == false
     environment: stage
     steps:
       - uses: actions/checkout@v3
       - name: Docker login
         run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
       - name: Build container
-        run: echo "docker build -t ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }} ."
+        run: echo "docker build -t ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }} ."
       - name: Push to Hub
-        run: echo "docker push ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
+        run: echo "docker push ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }}"
 
   stage:
     runs-on: [self-hosted, stage]
     environment: stage
-    if: github.event.pull_request.base.ref == 'master'
     needs: [build]
     steps:
       - uses: actions/checkout@v3
       - name: Docker login
         run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
       - name: Pull from Hub
-        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
+        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }}"
       - name: Run app container
         run: echo "docker-compose up"
 
@@ -44,18 +43,29 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run tests
         run: echo "npm run e2e"
-
-  prod:
-    runs-on: [self-hosted, prod]
-    environment: prod
-    needs: [test]
-    if: github.event.pull_request.merged == true
-    # if: github.ref == 'refs/heads/master'
+  
+  alpha:
+    runs-on: [self-hosted, alpha]
+    environment: alpha
+    if: github.ref == 'refs/heads/alpha'
     steps:
       - uses: actions/checkout@v3
       - name: Docker login
         run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
       - name: Pull from Hub
-        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.event.pull_request.head.sha }}"
+        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }}"
+      - name: Run app container
+        run: echo "docker-compose up"
+
+  prod:
+    runs-on: [self-hosted, prod]
+    environment: prod
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker login
+        run: echo "docker login --username ${{ secrets.CI_REGISTRY_USER }} --password ${{ secrets.CI_REGISTRY_PASSWORD }}"
+      - name: Pull from Hub
+        run: echo "docker pull ${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }}"
       - name: Run app container
         run: echo "docker-compose up"
