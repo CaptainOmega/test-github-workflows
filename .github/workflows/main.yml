@@ -26,7 +26,7 @@ jobs:
     environment: stage
     needs: [build]
     steps:
-      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+      - uses: CaptainOmega/test-github-workflows/.github/deploy@master
 
   test:
     runs-on: [self-hosted, stage]
@@ -42,11 +42,11 @@ jobs:
     environment: alpha
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'alpha'
     steps:
-      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+      - uses: CaptainOmega/test-github-workflows/.github/deploy@master
 
   prod:
     runs-on: [self-hosted, prod]
     environment: prod
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
     steps:
-      - uses: CaptainOmega/test-github-workflows/.github/actions/deploy@master
+      - uses: CaptainOmega/test-github-workflows/.github/deploy@master
